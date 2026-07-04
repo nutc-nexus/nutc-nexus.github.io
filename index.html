@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="light">
+  <meta name="theme-color" content="#005bac">
+  <meta name="description" content="國立臺中科技大學 NUTC Nexus 智慧校園客服：可查詢教務、學務、選課、學分、各處室單位與新生資訊，並提供常用系統連結。">
+  <link rel="icon" type="image/png" href="assets/favicon.png">
+  <title>NUTC Nexus · 國立臺中科技大學智慧校園客服</title>
+  <style>
+    :root{
+      --brand:#005bac; --ink:#1f2937; --muted:#6b7280;
+      --bg:#f3f4f6; --card:#fff; --line:#e5e7eb;
+      --maxw:960px; --radius:14px; --head-h:64px;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth; scroll-padding-top:calc(var(--head-h) + 20px)}
+    @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+    body{
+      margin:0; color:var(--ink); background:var(--bg); line-height:1.65;
+      font-family:"Segoe UI","Microsoft JhengHei","PingFang TC","Noto Sans TC",sans-serif;
+      -webkit-text-size-adjust:100%;
+    }
+    a{color:var(--brand)}
+    a:focus-visible,.nav a:focus-visible{outline:2px solid var(--brand); outline-offset:2px}
+    .wrap{max-width:var(--maxw); margin:0 auto; padding:0 16px}
+
+    /* ── sticky header (auto-hide on mobile scroll) ── */
+    header.site{
+      position:sticky; top:0; z-index:20;
+      background:rgba(255,255,255,.95); backdrop-filter:saturate(1.2) blur(6px);
+      border-bottom:1px solid var(--line);
+      transition:transform .25s ease;
+    }
+    .bar{
+      max-width:var(--maxw); margin:0 auto; min-height:var(--head-h);
+      padding:8px 16px; display:flex; align-items:center; gap:12px;
+      flex-wrap:wrap; row-gap:8px;
+    }
+    .bar img{height:42px; width:auto; display:block; flex:0 0 auto}
+    .brand{display:flex; flex-direction:column; min-width:0; overflow:hidden}
+    .brand b{font-size:16px; color:var(--brand); letter-spacing:.5px;
+      white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+    .brand span{font-size:12px; color:var(--muted); white-space:nowrap;
+      overflow:hidden; text-overflow:ellipsis}
+    .nav{margin-left:auto; display:flex; gap:8px; flex-wrap:wrap}
+    .nav a{
+      display:inline-block; padding:7px 14px; border:1px solid var(--brand);
+      color:var(--brand); border-radius:999px; text-decoration:none;
+      font-size:14px; font-weight:600; white-space:nowrap;
+    }
+    .nav a:hover{background:var(--brand); color:#fff}
+    @media (max-width:400px){ .brand span{display:none} }
+    /* 手機：下滑收起頂欄、上滑顯示（桌機不套用位移，維持常駐） */
+    @media (max-width:640px){
+      header.site.nav-hidden{transform:translateY(-100%)}
+    }
+
+    /* top disclaimer */
+    .topnote{margin:14px 0 2px; padding:9px 12px; font-size:12.5px; color:var(--muted);
+      background:#f1f5f9; border:1px solid var(--line); border-radius:10px}
+    .topnote b{color:var(--brand)}
+
+    /* ── sections ── */
+    main{padding:14px 0 8px}
+    .intro{padding:8px 0 18px}
+    .intro h1{margin:.15em 0; font-size:clamp(20px,4.6vw,26px)}
+    .intro p{margin:.3em 0; color:var(--muted); font-size:15px}
+
+    .card{
+      background:var(--card); border:1px solid var(--line);
+      border-radius:var(--radius); box-shadow:0 1px 3px rgba(0,0,0,.05);
+    }
+    .block{margin-top:28px; scroll-margin-top:calc(var(--head-h) + 20px)}
+
+    /* chat embed — bounded height so the page (not just the iframe) scrolls */
+    .chat{overflow:hidden}
+    .chat-frame{position:relative; width:100%;
+      height:min(75vh,680px); height:min(75dvh,680px); min-height:520px}
+    .chat-frame iframe{position:relative; z-index:1; width:100%; height:100%; border:0; display:block}
+    .chat-loading{position:absolute; inset:0; z-index:2; background:#fff;
+      display:flex; flex-direction:column; align-items:center; justify-content:center;
+      gap:12px; color:var(--muted); font-size:14px}
+    .spinner{width:34px; height:34px; border:3px solid var(--line);
+      border-top-color:var(--brand); border-radius:50%; animation:spin .8s linear infinite}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    @media (prefers-reduced-motion:reduce){.spinner{animation:none}}
+    .chat-fallback{margin:10px 2px 0; font-size:13px; color:var(--muted)}
+    /* 手機：對話框加高，打字/看訊息更寬敞 */
+    @media (max-width:640px){
+      .chat-frame{height:85vh; height:85dvh; min-height:600px}
+    }
+
+    .sec-head{display:flex; align-items:center; gap:10px; margin:0 0 12px}
+    .sec-head::before{content:""; width:6px; height:22px; background:var(--brand);
+      border-radius:3px; flex:0 0 auto}
+    .sec-head h2{margin:0; font-size:20px}
+
+    /* quick links */
+    .links-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); gap:12px}
+    .links-grid a{display:flex; flex-direction:column; gap:2px; text-decoration:none;
+      color:inherit; padding:14px; border:1px solid var(--line); border-radius:12px;
+      background:#fff; transition:border-color .15s, transform .15s}
+    .links-grid a:hover{border-color:var(--brand); transform:translateY(-1px)}
+    .links-grid b{color:var(--brand); font-size:15px}
+    .links-grid b::after{content:" \2197"; font-size:12px; color:var(--muted)}
+    .links-grid span{font-size:13px; color:var(--muted)}
+
+    /* faq */
+    .body-pad{padding:18px}
+    .win-title{margin:18px 0 .4em; font-weight:600; font-size:15px}
+    .win-title:first-child{margin-top:0}
+    .mins{margin:0; padding-left:1.15em; color:#374151; font-size:14.5px}
+    .mins li{margin:.25em 0}
+    .mins b{color:var(--brand)}
+    .src{margin-top:12px; font-size:12.5px; color:var(--muted)}
+    .tags{display:flex; flex-wrap:wrap; gap:8px; margin:.3em 0}
+    .tags span{font-size:13px; background:#eef4fb; color:var(--brand);
+      border:1px solid #d6e6f5; border-radius:999px; padding:4px 12px}
+
+    /* ── footer ── */
+    footer.site{margin-top:30px; border-top:1px solid var(--line); background:#fff}
+    footer.site .wrap{padding:20px 16px}
+    footer.site p{margin:.4em 0; font-size:13px; color:var(--muted)}
+  </style>
+</head>
+<body>
+  <header class="site">
+    <div class="bar">
+      <img src="assets/nutc-emblem.png" alt="國立臺中科技大學校徽">
+      <div class="brand">
+        <b>國立臺中科技大學</b>
+        <span>NUTC Nexus · 智慧校園客服</span>
+      </div>
+      <nav class="nav">
+        <a href="#links">快速連結</a>
+        <a href="#faq">常見問題</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <div class="topnote">本站對話由 <b>AI 生成</b>，僅供參考；正式資訊請以學校公告與各承辦單位為準。</div>
+
+    <section class="intro">
+      <h1>NUTC Nexus 智慧校園客服</h1>
+      <p>校園 RAG 問答助理，可查詢教務、學務、選課、學分、各處室單位與新生資訊。直接在下方對話框輸入問題即可。</p>
+    </section>
+
+    <section class="chat card" aria-label="智慧客服對話">
+      <div class="chat-frame">
+        <div class="chat-loading" id="chatLoading" aria-hidden="true">
+          <div class="spinner"></div>
+          <p>對話載入中…</p>
+        </div>
+        <iframe
+          src="https://copilotstudio.microsoft.com/environments/5d3bd6f8-c5dd-eb01-ab27-901d99c14a88/bots/crf89_t2/webchat?__version__=2"
+          title="NUTC Nexus 智慧客服對話視窗"
+          onload="var l=document.getElementById('chatLoading'); if(l){l.style.display='none';}"
+          frameborder="0"></iframe>
+      </div>
+    </section>
+    <p class="chat-fallback">對話框沒有顯示？<a href="https://copilotstudio.microsoft.com/environments/5d3bd6f8-c5dd-eb01-ab27-901d99c14a88/bots/crf89_t2/webchat?__version__=2" target="_blank" rel="noopener">用新分頁開啟對話 ↗</a></p>
+
+    <section id="links" class="block">
+      <div class="sec-head"><h2>常用系統・快速連結</h2></div>
+      <div class="links-grid">
+        <a href="https://sso.nutc.edu.tw/ePortal/" target="_blank" rel="noopener"><b>校園單一入口 ePortal</b><span>登入選課、成績、個人資料</span></a>
+        <a href="https://aca.nutc.edu.tw" target="_blank" rel="noopener"><b>教務處</b><span>課務、註冊、學籍、成績</span></a>
+        <a href="https://aisap.nutc.edu.tw/public/day/std_dep_course.aspx" target="_blank" rel="noopener"><b>選課／課表查詢 AISAP</b><span>各系開課與課表查詢</span></a>
+        <a href="https://student.nutc.edu.tw" target="_blank" rel="noopener"><b>學生事務處</b><span>生輔、住宿、獎助、社團</span></a>
+        <a href="https://elib.nutc.edu.tw" target="_blank" rel="noopener"><b>圖書館</b><span>館藏查詢、借閱、資料庫</span></a>
+        <a href="https://aca.nutc.edu.tw/p/412-1015-4596.php" target="_blank" rel="noopener"><b>年度行事曆</b><span>學期重要日程</span></a>
+        <a href="https://nd.nutc.edu.tw" target="_blank" rel="noopener"><b>進修部</b><span>進修部／空中學院</span></a>
+        <a href="https://admission.nutc.edu.tw" target="_blank" rel="noopener"><b>招生資訊</b><span>考生／新生入學</span></a>
+      </div>
+      <p class="src">以上為各系統官方網址；實際登入與即時作業以校方系統為準。校總機 04-2219-5678。</p>
+    </section>
+
+    <section id="faq" class="block">
+      <div class="sec-head"><h2>關於 NUTC Nexus · 常見問題</h2></div>
+      <div class="card">
+        <div class="body-pad">
+          <p class="win-title">這是什麼？</p>
+          <p style="margin:.2em 0;font-size:14.5px;color:#374151">NUTC Nexus 是國立臺中科技大學的校園 RAG 問答助理，可查詢教務、學務、總務、圖書館、國際處、進修部，以及各系所與行政單位的聯絡資訊，服務在校師生、考生、家長、校友與訪客。</p>
+
+          <p class="win-title">可以問什麼？</p>
+          <div class="tags">
+            <span>入學後注意事項</span><span>宿舍規定</span><span>學雜費與減免</span>
+            <span>選課／學分／畢業門檻</span><span>請假與獎助學金</span>
+            <span>圖書查詢</span><span>各單位電話與位置</span><span>校區與建物</span>
+          </div>
+          <p class="src" style="margin-top:8px">在對話框直接輸入即可，例如：「宿舍申請怎麼辦？」「圖書館幾點開？」</p>
+
+          <p class="win-title">使用前請注意</p>
+          <ul class="mins">
+            <li>回答由 <b>AI 生成</b>，正式資訊以學校公告與各承辦單位為準；不確定時請洽承辦單位。</li>
+            <li>本校為商業・設計・資訊・語文・護理健康綜合科大，<b>不提供本校沒有的科系／服務</b>（如理工、醫學、法政）。</li>
+            <li>個人帳號登入、即時成績與選課操作請至 <a href="https://sso.nutc.edu.tw/ePortal/" target="_blank" rel="noopener">ePortal</a>，機器人不代為操作。</li>
+            <li>三校區：三民（本部）、民生、南屯（2026 啟用，暫無系所）。校總機 <a href="tel:+886422195678">04-2219-5678</a>。</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site">
+    <div class="wrap">
+      <p>相關連結：<a href="https://www.nutc.edu.tw" target="_blank" rel="noopener">學校官方網站</a>　·　<a href="https://military.nutc.edu.tw" target="_blank" rel="noopener">軍訓室 · 校安中心</a></p>
+      <p>© 2026 NUTC Nexus。校徽著作權為國立臺中科技大學所有。</p>
+    </div>
+  </footer>
+
+  <script>
+    // 手機端：下滑收起頂欄、上滑顯示（桌機因 CSS media query 不套用位移）
+    (function () {
+      var header = document.querySelector('header.site');
+      if (!header) return;
+      var lastY = window.pageYOffset || 0, ticking = false;
+      function update() {
+        var y = window.pageYOffset || 0;
+        if (y > lastY + 6 && y > 80) header.classList.add('nav-hidden');
+        else if (y < lastY - 6) header.classList.remove('nav-hidden');
+        lastY = y;
+        ticking = false;
+      }
+      window.addEventListener('scroll', function () {
+        if (!ticking) { window.requestAnimationFrame(update); ticking = true; }
+      }, { passive: true });
+    })();
+  </script>
+</body>
+</html>
