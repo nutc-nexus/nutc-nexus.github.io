@@ -26,7 +26,7 @@
     a:focus-visible,.nav a:focus-visible{outline:2px solid var(--brand); outline-offset:2px}
     .wrap{max-width:var(--maxw); margin:0 auto; padding:0 16px}
 
-    /* ── sticky header (auto-hide on mobile scroll) ── */
+    /* ── sticky header (下滑收起，所有裝置) ── */
     header.site{
       position:sticky; top:0; z-index:20;
       background:rgba(255,255,255,.95); backdrop-filter:saturate(1.2) blur(6px);
@@ -52,10 +52,8 @@
     }
     .nav a:hover{background:var(--brand); color:#fff}
     @media (max-width:400px){ .brand span{display:none} }
-    /* 手機：下滑收起頂欄、上滑顯示（桌機不套用位移，維持常駐） */
-    @media (max-width:640px){
-      header.site.nav-hidden{transform:translateY(-100%)}
-    }
+    /* 下滑收起頂欄、上滑顯示：避免頂欄遮住下方對話框（所有裝置皆套用） */
+    header.site.nav-hidden{transform:translateY(-100%)}
 
     /* top disclaimer */
     .topnote{margin:14px 0 2px; padding:9px 12px; font-size:12.5px; color:var(--muted);
@@ -213,7 +211,7 @@
   </footer>
 
   <script>
-    // 手機端：下滑收起頂欄、上滑顯示（桌機因 CSS media query 不套用位移）
+    // 下滑收起頂欄、上滑顯示：避免頂欄遮住對話框（桌機與手機皆套用）
     (function () {
       var header = document.querySelector('header.site');
       if (!header) return;
